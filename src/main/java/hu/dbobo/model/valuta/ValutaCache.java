@@ -1,5 +1,7 @@
 package hu.dbobo.model.valuta;
 
+import hu.dbobo.exceptions.IncompleteDatabaseException;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,25 +20,19 @@ public class ValutaCache {
     private ValutaCache() {
         this.valutas = new HashSet<>();
         valutas.addAll(new ValutaManager().findAll());
-        for (ValutaId valutaId : missingIds()) {
-            valutas.add(new Valuta(
-                    valutaId,
-                    null,
-                    0,
-                    0,
-                    0,
-                    0
-            ));
+        if (!isEveryValutaPresent()) {
+            throw new IncompleteDatabaseException("The database is missing one or more currencies!");
         }
     }
 
-    private ValutaId[] missingIds() {
+    private boolean isEveryValutaPresent() {
         return Arrays.stream(ValutaId.values())
-                .filter(v -> !isValutaExist(v))
-                .toArray(ValutaId[]::new);
+                .filter(v -> !doesValutaExist(v))
+                .toList()
+                .isEmpty();
     }
 
-    private boolean isValutaExist(ValutaId valutaId) {
+    private boolean doesValutaExist(ValutaId valutaId) {
         return valutas.stream()
                 .anyMatch(valuta -> valuta.getValutaId() == valutaId);
     }
