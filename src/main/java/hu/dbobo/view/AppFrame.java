@@ -35,7 +35,10 @@ public class AppFrame extends JFrame {
                 amount = BigDecimal.ZERO;
                 // TODO: show Error Dialog
             }
-            exchangeService.exchange(from, to, amount);
+            exchangeService.exchange(from, to, amount).ifPresentOrElse(
+                    exRes -> showExchangeResultMessage(exRes, to),
+                    this::showExchangeFailureMessage
+            );
         });
 
         this.add(fromLabel);
@@ -61,6 +64,25 @@ public class AppFrame extends JFrame {
         this.setLocationRelativeTo(null);
 
         this.setResizable(false);
+    }
+
+    private void showExchangeResultMessage(BigDecimal exchangeResult, ValutaId currency) {
+        String message = "Exchange successful! You received %s %s";
+        JOptionPane.showMessageDialog(
+                this,
+                String.format(message, exchangeResult.toString(), currency.toString()),
+                "Successful Exchange",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    private void showExchangeFailureMessage() {
+        JOptionPane.showMessageDialog(
+                this,
+                "Exchange process could not be completed!",
+                "Exchange Failure",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 
     private static class ValutaComboBox extends JComboBox<ValutaId> {
