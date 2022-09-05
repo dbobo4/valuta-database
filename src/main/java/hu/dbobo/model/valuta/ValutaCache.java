@@ -3,6 +3,7 @@ package hu.dbobo.model.valuta;
 import hu.dbobo.exceptions.IncompleteDatabaseException;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,15 +27,9 @@ public class ValutaCache {
     }
 
     private boolean isEveryValutaPresent() {
-        return Arrays.stream(ValutaId.values())
-                .filter(v -> !doesValutaExist(v))
-                .toList()
-                .isEmpty();
-    }
-
-    private boolean doesValutaExist(ValutaId valutaId) {
-        return valutas.stream()
-                .anyMatch(valuta -> valuta.getValutaId() == valutaId);
+        EnumSet<ValutaId> valutaIds = EnumSet.allOf(ValutaId.class);
+        valutas.stream().map(Valuta::getValutaId).forEach(valutaIds::remove);
+        return valutaIds.isEmpty();
     }
 
     public void setExchangeRate(ValutaId from, ValutaId to, double rate) {
