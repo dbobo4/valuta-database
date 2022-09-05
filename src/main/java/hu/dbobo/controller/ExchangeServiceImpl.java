@@ -19,20 +19,25 @@ public class ExchangeServiceImpl implements ExchangeService {
         this.changeEventManager = changeEventManager;
     }
 
+
     @Override
     public Optional<BigDecimal> exchange(ValutaId from, ValutaId to, BigDecimal amount) {
+        if (from == null || to == null || amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return Optional.empty();
+        }
         double currentRate = valutaCache.getExchangeRate(from, to);
-        BigDecimal amountBigDecimal = new BigDecimal(String.valueOf(amount));
         ChangeEvent changeEvent = new ChangeEvent(from, to, amount.doubleValue(), LocalDate.now());
         changeEventManager.insertEvent(changeEvent);
-        return Optional.of(amountBigDecimal.multiply(BigDecimal.valueOf(currentRate)));
+        return Optional.of(amount.multiply(BigDecimal.valueOf(currentRate)));
     }
 
     @Override
     public Optional<BigDecimal> checkRate(ValutaId from, ValutaId to, BigDecimal amount) {
+        if (from == null || to == null || amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return Optional.empty();
+        }
         double currentRate = valutaCache.getExchangeRate(from, to);
-        BigDecimal amountBigDecimal = new BigDecimal(String.valueOf(amount));
-        return Optional.of(amountBigDecimal.multiply(BigDecimal.valueOf(currentRate)));
+        return Optional.of(amount.multiply(BigDecimal.valueOf(currentRate)));
     }
 
     @Override
