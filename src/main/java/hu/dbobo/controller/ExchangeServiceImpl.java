@@ -40,10 +40,4 @@ public class ExchangeServiceImpl implements ExchangeService {
         return Optional.of(amount.multiply(BigDecimal.valueOf(currentRate)));
     }
 
-    @Override
-    public boolean setExchangeRate(ValutaId from, ValutaId to, double rate) {
-        return false;
-    }
-
-
 }

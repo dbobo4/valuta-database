@@ -11,6 +11,5 @@ public interface ExchangeService {
 
     Optional<BigDecimal> checkRate(ValutaId from, ValutaId to, BigDecimal amount);
 
-    boolean setExchangeRate(ValutaId from, ValutaId to, double rate);
 
 }
