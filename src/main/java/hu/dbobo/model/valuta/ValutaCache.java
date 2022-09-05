@@ -53,4 +53,8 @@ public class ValutaCache {
                 .orElseThrow();
     }
 
+    public double getExchangeRate(ValutaId from, ValutaId to) {
+        return this.get(from).getCurrencyValue(to);
+    }
+
 }
