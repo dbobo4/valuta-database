@@ -56,6 +56,15 @@ public class DerbyConfig {
             createTable(createTableSqls[i], createTableNames[i]);
         }
 
+        insertValuta("CHF", "Swiss Franc");
+        insertValuta("EUR", "Euro");
+        insertValuta("USD", "United States Dollar");
+        insertValuta("HUF", "Hungarian Forint");
+
+        insertExchangeRate("CHF", 1, 1.03, 1.02, 414.88);
+        insertExchangeRate("EUR", 0.97, 1, 0.99, 404.13);
+        insertExchangeRate("USD", 0.98, 1.01, 1, 406.86);
+        insertExchangeRate("HUF", 0.0024, 0.0025, 0.0025, 1);
 
     }
 
@@ -69,6 +78,28 @@ public class DerbyConfig {
 
             preparedStatement.setString(1, valutaId);
             preparedStatement.setString(2, valutaName);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void insertExchangeRate(String valutaId, double rate1, double rate2, double rate3, double rate4) {
+        String sql = """
+                INSERT INTO exchange_rate (valuta_id,chf,eur,usd,huf)
+                VALUES (?,?,?,?,?)
+                """;
+
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, valutaId);
+            preparedStatement.setDouble(2, rate1);
+            preparedStatement.setDouble(3, rate2);
+            preparedStatement.setDouble(4, rate3);
+            preparedStatement.setDouble(5, rate4);
 
             preparedStatement.executeUpdate();
 
