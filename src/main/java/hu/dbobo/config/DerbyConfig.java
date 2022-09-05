@@ -66,6 +66,10 @@ public class DerbyConfig {
         insertExchangeRate("USD", 0.98, 1.01, 1, 406.86);
         insertExchangeRate("HUF", 0.0024, 0.0025, 0.0025, 1);
 
+        // Set up change ID sequence
+        String changeIdSeq = "CREATE SEQUENCE APP.change_id AS INTEGER START WITH 1 INCREMENT BY 1";
+        executeDml(changeIdSeq);
+
     }
 
     private static void insertValuta(String valutaId, String valutaName) {
@@ -135,6 +139,15 @@ public class DerbyConfig {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private static void executeDml(String sql) {
+        try (Connection conn = getConnection();
+        Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+        } catch (SQLException | ClassNotFoundException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
 }
