@@ -1,4 +1,5 @@
 target/
 .idea/
 VALUTA/
+!src/**/valuta/
 /derby.log
