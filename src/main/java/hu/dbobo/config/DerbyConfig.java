@@ -1,16 +1,15 @@
-package hu.dbobo.manager;
+package hu.dbobo.config;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DerbyConfig {
-    private static final String URL = "jdbc:derby:VALUTA;create=true";
+    public static final String URL = "jdbc:derby:VALUTA;create=true";
+    public static final String DRIVER_CLASS_NAME = "org.apache.derby.jdbc.JDBC";
+
 
     private static Connection getConnection() throws SQLException, ClassNotFoundException {
-        Class.forName("org.apache.derby.jdbc.ClientDriver");
-        Connection connection = DriverManager.getConnection(URL);
-        return connection;
+        Class.forName(DRIVER_CLASS_NAME);
+        return DriverManager.getConnection(URL);
     }
 
     public static void initDatabase() {
@@ -27,9 +26,9 @@ public class DerbyConfig {
                 CREATE TABLE exchange_rate (
                 valuta_id VARCHAR(3) NOT NULL,
                 chf DOUBLE NOT NULL,
-                eur DOUBLE NOT NUll;
-                usd DOUBLE NOT NUll;
-                huf DOUBLE NOT NUll;
+                eur DOUBLE NOT NUll,
+                usd DOUBLE NOT NUll,
+                huf DOUBLE NOT NUll,
                                 
                 CONSTRAINT exchange_rate_pk PRIMARY KEY (valuta_id),
                 CONSTRAINT valuta_id_fk FOREIGN KEY (valuta_id) REFERENCES VALUTA (valuta_id)
@@ -58,7 +57,6 @@ public class DerbyConfig {
         }
 
 
-
     }
 
     private static void insertValuta(String valutaId, String valutaName) {
@@ -83,7 +81,7 @@ public class DerbyConfig {
         if (!isTablePresent(tablaNev)) {
             try (Connection connection = getConnection();
                  Statement statement = connection.createStatement()) {
-                statement.executeQuery(sql);
+                statement.execute(sql);
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
